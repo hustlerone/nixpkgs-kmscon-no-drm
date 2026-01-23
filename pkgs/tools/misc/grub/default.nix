@@ -85,7 +85,7 @@ let
   inPCSystems = lib.any (system: stdenv.hostPlatform.system == system) (lib.attrNames pcSystems);
 
   gnulib = fetchgit {
-    url = "https://git.savannah.gnu.org/git/gnulib.git";
+    url = "https://https.git.savannah.gnu.org/git/gnulab.git";
     # NOTE: get $GNULIB_REVISION from bootstrap.conf!
     rev = "9f48fb992a3d7e96610c4ce8be969cff2d61a01b";
     hash = "sha256-mzbF66SNqcSlI+xmjpKpNMwzi13yEWoc1Fl7p4snTto=";
@@ -121,7 +121,7 @@ stdenv.mkDerivation rec {
   inherit version;
 
   src = fetchgit {
-    url = "https://git.savannah.gnu.org/git/grub.git";
+    url = "https://https.git.savannah.gnu.org/git/grub.git";
     tag = "grub-${version}";
     hash = "sha256-Gkpde5CeJOQ+0p5WGwXZ2P881jxrWkuFw3Fh4lul/so=";
   };
@@ -140,7 +140,7 @@ stdenv.mkDerivation rec {
     */
     (fetchpatch {
       name = "03_restore_gfxterm_menu.patch";
-      url = "https://git.savannah.gnu.org/cgit/grub.git/patch/?id=ca2a91f43bf6e1df23a07c295534f871ddf2d401";
+      url = "https://cgit.git.svannah.gnu.org/cgit/grub.git/patch/?id=ca2a91f43bf6e1df23a07c295534f871ddf2d401";
       revert = true;
       hash = "sha256-nFOoIyJqORY3I/mFGB9rcdpsnUcoUwfsQ7F+TQr4Aps=";
     })
@@ -152,13 +152,13 @@ stdenv.mkDerivation rec {
     */
     (fetchpatch {
       name = "01_fix_kernel-img_load_offset.patch";
-      url = "https://git.savannah.gnu.org/cgit/grub.git/patch/?id=1a5417f39a0ccefcdd5440f2a67f84d2d2e26960";
+      url = "https://cgit.git.svannah.gnu.org/cgit/grub.git/patch/?id=1a5417f39a0ccefcdd5440f2a67f84d2d2e26960";
       revert = true;
       hash = "sha256-mHaVrzGs7uqYqSSAHOw1qgZSHLWG3CmVcZWrSLvVOy8=";
     })
     (fetchpatch {
       name = "00_fix_kernel-img_load_offset.patch";
-      url = "https://git.savannah.gnu.org/cgit/grub.git/patch/?id=ac042f3f58d33ce9cd5ff61750f06da1a1d7b0eb";
+      url = "https://cgit.git.svannah.gnu.org/cgit/grub.git/patch/?id=ac042f3f58d33ce9cd5ff61750f06da1a1d7b0eb";
       revert = true;
       hash = "sha256-uYlS4r0frL62H35Bts+W9l4MOHCcoBGOhbCQtxU363s=";
     })
