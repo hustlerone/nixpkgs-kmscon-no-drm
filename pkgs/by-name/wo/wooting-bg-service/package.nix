@@ -2,69 +2,46 @@
   appimageTools,
   fetchurl,
   lib,
-  makeWrapper,
-  wootility,
-  stdenv,
 }:
 
 let
   pname = "wooting-bg-service";
-
-  selectSystem =
-    attrs:
-    attrs.${stdenv.hostPlatform.system} or (throw "Unsupported system: ${stdenv.hostPlatform.system}");
-
-  platform = lib.splitString "-" stdenv.hostPlatform.system;
-  version = "0.4.8";
-
-  # In case more Linux platforms are supported in the future.
-  availablePlatforms = {
-    x86_64-linux = "sha256-syezhx3ME5wFxLba3W6+UdrPF0DfbxCd1u+6yXCr6zI=";
-  };
+  version = "0.5.0";
 
   src = fetchurl {
-    url = "https://api.wooting.io/public/bg-service/download-installer?target=${builtins.elemAt platform 1}&arch=${builtins.elemAt platform 0}&version=v${version}";
-    hash = selectSystem availablePlatforms;
+    name = "Wooting-Background-Service-${version}-amd64.AppImage";
+    url = "https://api.wooting.io/public/bg-service/download-installer?target=linux&arch=x86_64&version=v${version}";
+    hash = "sha256-e5NQ9rExdmvobXMEQDfrnU0ofIDOd14AEfH7SkRC6VU=";
   };
+
+  contents = appimageTools.extract { inherit pname version src; };
 in
 
 appimageTools.wrapType2 {
   inherit version pname src;
 
-  nativeBuildInputs = [ makeWrapper ];
+  extraInstallCommands = ''
+    install -Dm444 "${contents}/usr/share/applications/Wooting Background Service.desktop" \
+      $out/share/applications/${pname}.desktop
 
-  extraInstallCommands =
-    let
-      contents = appimageTools.extract { inherit pname version src; };
-    in
-    ''
-      install -Dm444 '${contents}/Wooting Background Service.desktop' -t $out/share/applications
-      install -Dm444 '${contents}/Wooting Background Service.png' -t $out/share/icons
-      install -Dm444 ${contents}/${pname}.png -t $out/share/icons
-    '';
-
-  profile = ''
-    export LC_ALL=C.UTF-8
+    for size in 32x32 128x128; do
+      install -Dm444 ${contents}/usr/share/icons/hicolor/$size/apps/${pname}.png \
+        -t $out/share/icons/hicolor/$size/apps
+    done
   '';
-
-  __structuredAttrs = true;
-  strictDeps = true;
-
-  extraPkgs =
-    pkgs: with pkgs; [
-      libxkbfile
-      xdg-utils
-    ];
 
   meta = {
     homepage = "https://wooting.io/wootility";
-    description = "Wooting's background service. Provides applinking and allows access to CPU usage, battery level, Discord mute status, etc.";
-    platforms = builtins.attrNames availablePlatforms;
+    description = "Background service for Wooting keyboards";
+    longDescription = ''
+      Companion daemon for Wootility. It keeps a link to the keyboard open while
+      Wootility is closed, which is what app linking (per-application profile
+      switching) and the light indicators (volume, battery, system info, Discord)
+      rely on.
+    '';
+    platforms = [ "x86_64-linux" ];
     license = lib.licenses.unfree;
-    maintainers = with lib.maintainers; [
-      sodiboo
-      returntoreality
-    ];
+    maintainers = with lib.maintainers; [ returntoreality ];
     mainProgram = pname;
   };
 }
